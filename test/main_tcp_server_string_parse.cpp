@@ -1,5 +1,6 @@
 #include <SPI.h>
 #include <Ethernet.h>
+#include <PID_v1.h>
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };  // MAC address for the Ethernet shield
 IPAddress ip(192, 168, 1, 177);  // Set a static IP address for the server
@@ -9,9 +10,9 @@ String dataBuffer = "";  // Buffer to hold the incoming data
 
 uint16_t i;
 
-uint8_t HexToDecimal(uint8_t character)
+uint32_t HexToDecimal(uint8_t character)
 {
-    uint8_t result = 0;
+    uint32_t result = 0;
     if(character >= '0' && character <= '9')
 	{
 		result = character - '0';
@@ -98,10 +99,30 @@ uint8_t parseBuffer(String buffer)
   // }
   /****end M1 info ****/
 
-
-
   return 0;
 
+}
+
+
+void controlMotor(String buffer)
+{
+  uint16_t i;
+  uint16_t M1_dir;
+  uint32_t M1_vel;
+  uint16_t M1_pos;
+
+  M1_dir = HexToDecimal(buffer[3]);
+  M1_vel = HexToDecimal(buffer[4])*1000 +
+           HexToDecimal(buffer[5])*100 +
+           HexToDecimal(buffer[6])*10 +
+           HexToDecimal(buffer[7]);
+    
+  Serial.println("test: ");
+  Serial.println(M1_vel);
+
+  while(pos)
+
+  
 }
 
 void setup() 
@@ -135,7 +156,8 @@ void loop()
           {
             server.println("01");
             Serial.println("Checksum done!");
-            parseBuffer(dataBuffer);
+            // parseBuffer(dataBuffer);
+            controlMotor(dataBuffer);
             // Serial.print(dataBuffer[1]);
             // parseBuffer(dataBuffer);
 
